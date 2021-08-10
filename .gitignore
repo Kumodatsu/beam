@@ -1,3 +1,6 @@
 # Generated files
 _out/
 Makefile
+
+# Visual Studio Code files
+.vscode/
