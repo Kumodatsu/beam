@@ -44,7 +44,7 @@ namespace beam {
                 m_focal_distance,
                 m_aperture_radius;
 
-        inline static constexpr Float32 FOVToScreenScale(Float32 fov_deg) {
+        inline Float32 FOVToScreenScale(Float32 fov_deg) {
             return 2.0f * std::tan(0.5f * maths::deg_to_rad(fov_deg));
         }
     };

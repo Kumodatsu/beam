@@ -82,11 +82,11 @@ namespace beam::maths {
         return dot(v, v);
     }
 
-    inline constexpr Float32 length(const Vec4& v) {
+    inline Float32 length(const Vec4& v) {
         return std::sqrt(length_sq(v));
     }
 
-    inline constexpr Vec4 normalized(const Vec4& v) {
+    inline Vec4 normalized(const Vec4& v) {
         return v / length(v);
     }
 
