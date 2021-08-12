@@ -24,6 +24,20 @@ namespace beam {
         return Intersection(P, maths::normalized(P - Center), Material);
     }
 
+    std::optional<Intersection> Plane::Intersect(const Ray& ray) const {
+        const Float32 t
+            = -(maths::dot(ray.Origin,    Normal) + D)
+            /   maths::dot(ray.Direction, Normal);
+        if (t < 0.0f)
+            return std::nullopt;
+        const auto P = ray.Traverse(t);
+        return Intersection(
+            P,
+            maths::dot(ray.Direction, Normal) > 0.0f ? -Normal : Normal,
+            Material
+        );
+    }
+
     std::optional<Intersection> Scene::Intersect(const Ray& ray) const {
         std::optional<Intersection>
             closest_intersection = std::nullopt;

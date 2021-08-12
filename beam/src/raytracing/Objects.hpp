@@ -13,8 +13,28 @@ namespace beam {
 
         Sphere(const beam::Material& material, const Vec3& center,
                 Float32 radius)
-            : Material(material), Center(center), Radius(radius) { }
+            : Center(center), Radius(radius), Material(material) { }
         
+        virtual std::optional<Intersection> Intersect(const Ray& ray)
+            const override;
+    };
+
+    class Plane : public Intersectable {
+    public:
+        // The plane is defined by the set of all points (x, y, z) that obey:
+        // x * Normal.X + y * Normal.Y + z * Normal.Z + D == 0.0f
+        Vec3     Normal;
+        Float32  D;
+        Material Material;
+
+        Plane(const beam::Material& material, const Vec3& normal, Float32 d)
+            : Normal(normal), D(d), Material(material) { }
+
+        Plane(const beam::Material& material, const Vec3& normal,
+                const Vec3& point)
+            : Normal(normal), D(-maths::dot(normal, point)), Material(material)
+        { }
+
         virtual std::optional<Intersection> Intersect(const Ray& ray)
             const override;
     };

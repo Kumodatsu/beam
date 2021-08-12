@@ -59,6 +59,19 @@ namespace beam {
                         parse_vec3(obj["pos"]),
                         obj["radius"]
                     );
+                } else if (obj["type"] == "plane") {
+                    if (obj.contains("d"))
+                        scene.Add<Plane>(
+                            parse_material(obj["material"]),
+                            parse_vec3(obj["normal"]),
+                            obj["d"]
+                        );
+                    else
+                        scene.Add<Plane>(
+                            parse_material(obj["material"]),
+                            parse_vec3(obj["normal"]),
+                            parse_vec3(obj["point"])
+                        );
                 } else {
                     std::cerr << "Unknown object type." << std::endl;
                     return false;
