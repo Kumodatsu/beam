@@ -30,6 +30,7 @@ namespace beam {
         Vec4 Color;
 
         Intersectable(const Vec4& color) : Color(color) { }
+        virtual ~Intersectable() { }
         
         virtual std::optional<Intersection> Intersect(const Ray& ray) const = 0;
     };
