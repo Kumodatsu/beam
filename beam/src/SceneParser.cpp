@@ -23,6 +23,20 @@ namespace beam {
         );
     }
 
+    static MaterialType parse_material_type(const std::string& src) {
+        if (src == "diffuse")
+            return MaterialType::Diffuse;
+        throw std::runtime_error("Invalid material type.");
+    }
+
+    static Material parse_material(const json& src) {
+        return Material(
+            parse_material_type(src["type"]),
+            parse_color(src["color"]),
+            src["emission"]
+        );
+    }
+
     bool parse_scene(Scene& scene, const std::string& path) {
         scene.Clear();
 
@@ -41,7 +55,7 @@ namespace beam {
             for (const auto& obj : scene_desc["scene"]) {
                 if (obj["type"] == "sphere") {
                     scene.Add<Sphere>(
-                        parse_color(obj["material"]["color"]),
+                        parse_material(obj["material"]),
                         parse_vec3(obj["pos"]),
                         obj["radius"]
                     );

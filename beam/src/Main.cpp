@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
                 const Ray  ray          = camera.ScreenCoordsToRay(ru, rv);
                 const auto intersection = scene.Intersect(ray);
                 buffer.At(u, v) = intersection.has_value()
-                                ? Vec4(1.0f, 0.0f, 0.0f, 1.0f)
+                                ? intersection->Material.Color
                                 : clear_color;
             }
         }            

@@ -16,20 +16,44 @@ namespace beam {
         }
     };
 
+    enum class MaterialType : UInt8 {
+        Diffuse
+    };
+
+    struct Material {
+        MaterialType Type;
+        Vec4         Color;
+        Float32      Emission;
+
+        constexpr Material()
+            : Type(MaterialType::Diffuse)
+            , Color(Vec4(1.0f, 1.0f, 1.0f, 1.0f))
+            , Emission(0.0f)
+        { }
+        constexpr Material(MaterialType type, Vec4 color, Float32 emission)
+            : Type(type), Color(color), Emission(emission) { }
+    };
+
     struct Intersection {
-        Vec3 Point, Normal;
+        Vec3     Point,
+                 Normal;
+        Material Material;
 
         constexpr Intersection()
-            : Point(Vec3(0.0f, 0.0f, 0.0f)), Normal(Vec3(0.0f, 1.0f, 0.0f)) { }
-        constexpr Intersection(Vec3 point, Vec3 normal)
-            : Point(point), Normal(normal) { }
+            : Point(Vec3(0.0f, 0.0f, 0.0f))
+            , Normal(Vec3(0.0f, 1.0f, 0.0f))
+            , Material()
+        { }
+        constexpr Intersection(
+            const Vec3& point,
+            const Vec3& normal,
+            const beam::Material& material
+        ) : Point(point), Normal(normal), Material(material) { }
     };
 
     class Intersectable {
     public:
-        Vec4 Color;
-
-        Intersectable(const Vec4& color) : Color(color) { }
+        Intersectable() { }
         virtual ~Intersectable() { }
         
         virtual std::optional<Intersection> Intersect(const Ray& ray) const = 0;
@@ -37,11 +61,13 @@ namespace beam {
 
     class Sphere : public Intersectable {
     public:
-        Vec3    Center;
-        Float32 Radius;
+        Vec3     Center;
+        Float32  Radius;
+        Material Material;
 
-        Sphere(const Vec4& color, const Vec3& center, Float32 radius)
-            : Intersectable(color), Center(center), Radius(radius) { }
+        Sphere(const beam::Material& material, const Vec3& center,
+                Float32 radius)
+            : Material(material), Center(center), Radius(radius) { }
         
         virtual std::optional<Intersection> Intersect(const Ray& ray)
             const override;
@@ -49,7 +75,7 @@ namespace beam {
 
     class Scene : public Intersectable {
     public:
-        Scene() : Intersectable(Vec4(0.0f, 0.0f, 0.0f, 1.0f)) { }
+        Scene() { }
 
         template <typename IntersectableT, typename... Args>
         Scene& Add(Args&&... args) {

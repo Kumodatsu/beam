@@ -21,7 +21,7 @@ namespace beam {
         if (t < 0.0f)
             return std::nullopt;
         const auto P = ray.Traverse(t);
-        return Intersection(P, maths::normalized(P - Center));
+        return Intersection(P, maths::normalized(P - Center), Material);
     }
 
     std::optional<Intersection> Scene::Intersect(const Ray& ray) const {

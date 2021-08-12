@@ -5,7 +5,9 @@
             "pos": { "x": 0, "y": 0, "z": 10 },
             "radius": 3,
             "material": {
-                "color": { "r": 0, "g": 1, "b": 0, "a": 1 }
+                "type": "diffuse",
+                "color": { "r": 0, "g": 1, "b": 0, "a": 1 },
+                "emission": 0
             }
         }
     ]
