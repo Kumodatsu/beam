@@ -13,7 +13,8 @@ namespace beam {
             for (UIndex u = 0u; u < width; u++)
                 At(u, v) = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
         glCreateTextures(GL_TEXTURE_2D, 1, &m_texture_id);
-        glTextureStorage2D(m_texture_id, 1, GL_RGBA32F, width, height);
+        glTextureStorage2D(m_texture_id, 1, GL_RGBA32F, static_cast<GLsizei>(width),
+            static_cast<GLsizei>(height));
     }
 
     PixelBuffer::~PixelBuffer() {
@@ -22,8 +23,8 @@ namespace beam {
     }
 
     void PixelBuffer::BufferData() const {
-        glTextureSubImage2D(m_texture_id, 0, 0, 0, m_width, m_height,
-            GL_RGBA, GL_FLOAT, m_buffer);
+        glTextureSubImage2D(m_texture_id, 0, 0, 0, static_cast<GLsizei>(m_width),
+            static_cast<GLsizei>(m_height), GL_RGBA, GL_FLOAT, m_buffer);
     }
 
     void PixelBuffer::BindTexture(GLuint slot) const {
