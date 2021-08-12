@@ -10,6 +10,8 @@ namespace beam {
         Renderer();
         ~Renderer();
 
+        inline GLFWwindow* GetHandle() const { return m_window; }
+
         bool IsWindowCloseRequested() const;
         
         void Render(const PixelBuffer& buffer);
