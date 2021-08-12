@@ -3,9 +3,18 @@
 #include "raytracing/Raytracing.hpp"
 #include "rendering/Renderer.hpp"
 #include "rendering/PixelBuffer.hpp"
+#include "SceneParser.hpp"
 
-int main(int, char**) {
+int main(int argc, char** argv) {
     using namespace beam;
+
+    if (argc != 2) {
+        std::cerr << "You need to specify a scene file." << std::endl;
+        return -1;
+    }
+
+    const std::string scene_path = argv[1];
+    auto scene_update_time = std::filesystem::last_write_time(scene_path);
 
     Renderer renderer;
 
@@ -32,11 +41,7 @@ int main(int, char**) {
     );
 
     Scene scene;
-    scene
-    .Add<Sphere>(Vec4(0.0f, 1.0f, 0.0f, 1.0f), Vec3(0.0f, 0.0f, 10.0f), 3.0f)
-    .Add<Sphere>(Vec4(0.0f, 1.0f, 0.0f, 1.0f), Vec3(5.0f, 0.0f, 10.0f), 2.0f)
-    .Add<Sphere>(Vec4(0.0f, 1.0f, 0.0f, 1.0f), Vec3(0.0f, -6.0f, 10.0f), 3.0f)
-    ;
+    parse_scene(scene, argv[1]);
 
     while (!renderer.IsWindowCloseRequested()) {
         constexpr Float32 speed = 1.0f;
@@ -76,6 +81,16 @@ int main(int, char**) {
 
         renderer.Render(buffer);
         renderer.SwapBuffers();
+
+        if (std::filesystem::exists(scene_path)) {
+            const auto update_time =
+                std::filesystem::last_write_time(scene_path);
+            if (update_time > scene_update_time) {
+                scene_update_time = update_time;
+                parse_scene(scene, argv[1]);    
+            }
+        }
+
         glfwPollEvents();
     }
 
