@@ -1,3 +1,5 @@
+#pragma once
+
 namespace beam::maths {
 
     struct Vec4 {
