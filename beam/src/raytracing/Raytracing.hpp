@@ -59,6 +59,8 @@ namespace beam {
 
         virtual std::optional<Intersection> Intersect(const Ray& ray)
             const override;
+
+        void Clear();
     private:
         std::vector<std::unique_ptr<Intersectable>> m_objects;
     };

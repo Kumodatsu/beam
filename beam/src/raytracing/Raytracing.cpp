@@ -43,4 +43,8 @@ namespace beam {
         return closest_intersection;
     }
 
+    void Scene::Clear() {
+        m_objects.clear();
+    }
+
 }
