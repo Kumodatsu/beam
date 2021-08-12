@@ -97,9 +97,12 @@ workspace "beam"
         systemversion "latest"
         pchheader     "Common.hpp"
         pchsource     "beam/src/Common.hpp"
-        warnings      "extra"
         targetdir     (BIN_DIR)
         objdir        (OBJ_DIR)
+        warnings      "extra"
+        disablewarnings {
+            4068
+        }
         defines {
             "GLFW_INCLUDE_NONE",
         }
@@ -109,6 +112,7 @@ workspace "beam"
         }
         includedirs {
             "%{prj.name}/src",
+            "dependencies/include",
             "dependencies/glad/glad/include",
             "dependencies/glfw/glfw/include",
         }
