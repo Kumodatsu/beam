@@ -22,14 +22,12 @@ int main(int argc, char** argv) {
         width  = 640,
         height = 480;
 
+    constexpr Vec4 clear_color = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
     PixelBuffer buffer(width, height);
     for (UIndex v = 0u; v < height; v++)
-        for (UIndex u = 0u; u < width; u++) {
-            buffer.At(u, v) = Vec4(
-                Float32(u + 1) / Float32(width),
-                0.0f, 0.0f, 1.0f
-            );
-        }
+        for (UIndex u = 0u; u < width; u++)
+            buffer.At(u, v) = clear_color;
 
     Camera camera(
         Float32(width) / Float32(height),
@@ -69,13 +67,9 @@ int main(int argc, char** argv) {
                     rv = v * dv;
                 const Ray  ray          = camera.ScreenCoordsToRay(ru, rv);
                 const auto intersection = scene.Intersect(ray);
-                Vec4 color;
-                if (intersection) {
-                    color = Vec4(1.0f, 0.0f, 0.0f, 1.0f);
-                } else {
-                    color = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
-                }
-                buffer.At(u, v) = color;
+                buffer.At(u, v) = intersection.has_value()
+                                ? Vec4(1.0f, 0.0f, 0.0f, 1.0f)
+                                : clear_color;
             }
         }            
 
