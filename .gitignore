@@ -1,6 +1,15 @@
-# Generated files
+# Build output
 _out/
+
+# Project files
 Makefile
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
 
 # Visual Studio Code files
 .vscode/
+
+# Visual Studio files
+.vs/
