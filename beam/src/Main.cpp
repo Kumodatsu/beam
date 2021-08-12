@@ -1,6 +1,7 @@
 #include "Common.hpp"
 #include "raytracing/Camera.hpp"
 #include "raytracing/Raytracing.hpp"
+#include "raytracing/Objects.hpp"
 #include "rendering/Renderer.hpp"
 #include "rendering/PixelBuffer.hpp"
 #include "SceneParser.hpp"
@@ -57,21 +58,7 @@ int main(int argc, char** argv) {
             camera.Move(speed * movement);
         }
 
-        const Float32
-            du = 1.0f / Float32(width),
-            dv = 1.0f / Float32(height);
-        for (UIndex v = 0u; v < height; v++) {
-            for (UIndex u = 0u; u < width; u++) {
-                const Float32
-                    ru = u * du,
-                    rv = v * dv;
-                const Ray  ray          = camera.ScreenCoordsToRay(ru, rv);
-                const auto intersection = scene.Intersect(ray);
-                buffer.At(u, v) = intersection.has_value()
-                                ? intersection->Material.Color
-                                : clear_color;
-            }
-        }            
+        scene.Trace(camera, clear_color, buffer);
 
         renderer.Render(buffer);
         renderer.SwapBuffers();
