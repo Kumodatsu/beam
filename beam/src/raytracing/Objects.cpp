@@ -3,6 +3,69 @@
 
 namespace beam {
 
+    // AABB
+
+    AABB AABB::GetBoundingBox() const {
+        return *this;
+    }
+
+    std::optional<Intersection> AABB::Intersect(const Ray&) const {
+        return std::nullopt;
+    }
+
+    bool AABB::Intersects(const Ray& ray) const {
+        const Vec3 inv_dir = 1.0f / ray.Direction;
+        const Float32
+            t_0   = inv_dir.X * (XMin - ray.Origin.X),
+            t_1   = inv_dir.X * (XMax - ray.Origin.X),
+            t_2   = inv_dir.Y * (YMin - ray.Origin.Y),
+            t_3   = inv_dir.Y * (YMax - ray.Origin.Y),
+            t_4   = inv_dir.Z * (ZMin - ray.Origin.Z),
+            t_5   = inv_dir.Z * (ZMax - ray.Origin.Z),
+            t_min = std::max(
+                        std::max(std::min(t_0, t_1), std::min(t_2, t_3)),
+                        std::min(t_4, t_5)
+                    ),
+            t_max = std::min(
+                        std::min(std::max(t_0, t_1), std::max(t_2, t_3)),
+                        std::max(t_4, t_5)
+                    );
+        return t_max >= 0.0f && t_max >= t_min;
+    }
+
+    void AABB::Combine(const AABB& aabb) {
+        XMin = std::min(XMin, aabb.XMin);
+        XMax = std::max(XMax, aabb.XMax);
+        YMin = std::min(YMin, aabb.YMin);
+        YMax = std::max(YMax, aabb.YMax);
+        ZMin = std::min(ZMin, aabb.ZMin);
+        ZMax = std::max(ZMax, aabb.ZMax);
+    }
+
+    AABB AABB::OverarchingAABB(const AABB& a, const AABB& b) {
+        return AABB(
+            std::min(a.XMin, b.XMin),
+            std::max(a.XMax, b.XMax),
+            std::min(a.YMin, b.YMin),
+            std::max(a.YMax, b.YMax),
+            std::min(a.ZMin, b.ZMin),
+            std::max(a.ZMax, b.ZMax)
+        );
+    }
+
+    // Sphere
+
+    AABB Sphere::GetBoundingBox() const {
+        return AABB(
+            Center.X - Radius,
+            Center.X + Radius,
+            Center.Y - Radius,
+            Center.Y + Radius,
+            Center.Z - Radius,
+            Center.Z + Radius
+        );
+    }
+
     std::optional<Intersection> Sphere::Intersect(const Ray& ray) const {
         const Vec3
             O_C = ray.Origin - Center;
@@ -24,6 +87,21 @@ namespace beam {
         return Intersection(P, maths::normalized(P - Center), Material);
     }
 
+    // Plane
+
+    AABB Plane::GetBoundingBox() const {
+        AABB aabb = AABB::Infinite();
+        if (!maths::is_axis_aligned(Normal))
+            return aabb;
+        if (Normal.X > 0.0f)
+            aabb.XMin = aabb.XMax = -D;
+        else if (Normal.Y > 0.0f)
+            aabb.YMin = aabb.YMax = -D;
+        else if (Normal.Z > 0.0f)
+            aabb.ZMin = aabb.ZMax = -D;
+        return aabb;
+    }
+
     std::optional<Intersection> Plane::Intersect(const Ray& ray) const {
         const Float32 t
             = -(maths::dot(ray.Origin,    Normal) + D)
@@ -36,6 +114,15 @@ namespace beam {
             maths::dot(ray.Direction, Normal) > 0.0f ? -Normal : Normal,
             Material
         );
+    }
+
+    // Scene
+
+    AABB Scene::GetBoundingBox() const {
+        AABB aabb = AABB::Nothing();
+        for (const auto& object : m_objects)
+            aabb.Combine(object->GetBoundingBox());
+        return aabb;
     }
 
     std::optional<Intersection> Scene::Intersect(const Ray& ray) const {

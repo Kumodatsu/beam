@@ -4,6 +4,8 @@
 
 namespace beam {
 
+    class AABB;
+
     // Hi, Ray!
     struct Ray {
         Vec3 Origin, Direction;
@@ -56,7 +58,11 @@ namespace beam {
         Intersectable() { }
         virtual ~Intersectable() { }
         
+        virtual AABB GetBoundingBox() const = 0;
         virtual std::optional<Intersection> Intersect(const Ray& ray) const = 0;
+        virtual bool Intersects(const Ray& ray) const {
+            return Intersect(ray).has_value();
+        }
     };
 
 }
