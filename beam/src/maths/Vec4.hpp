@@ -38,6 +38,10 @@ namespace beam::maths {
         return Vec4(s * v.X, s * v.Y, s * v.Z, s * v.W);
     }
 
+    inline constexpr Vec4 operator / (Float32 s, const Vec4& v) {
+        return Vec4(s / v.X, s / v.Y, s / v.Z, s / v.W);
+    }
+
     inline constexpr Vec4 operator / (const Vec4& v, Float32 s) {
         return Vec4(v.X / s, v.Y / s, v.Z / s, v.W / s);
     }

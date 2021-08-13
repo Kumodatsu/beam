@@ -37,6 +37,10 @@ namespace beam::maths {
         return Vec3(s * v.X, s * v.Y, s * v.Z);
     }
 
+    inline constexpr Vec3 operator / (Float32 s, const Vec3& v) {
+        return Vec3(s / v.X, s / v.Y, s / v.Z);
+    }
+
     inline constexpr Vec3 operator / (const Vec3& v, Float32 s) {
         return Vec3(v.X / s, v.Y / s, v.Z / s);
     }
