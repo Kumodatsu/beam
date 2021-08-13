@@ -107,6 +107,12 @@ namespace beam::maths {
         v /= length(v);
     }
 
+    inline constexpr bool is_axis_aligned(const Vec3& v) {
+        if (v.X == 0.0)
+            return v.Y == 0.0 && v.Z != 0.0 || v.Z == 0.0;
+        return v.Y == 0.0 && v.Z == 0.0;
+    }
+
     inline constexpr Vec3 cross(const Vec3& a, const Vec3& b) {
         return Vec3(
             a.Y * b.Z - a.Z * b.Y,
