@@ -116,6 +116,49 @@ namespace beam {
         );
     }
 
+    // Triangle
+
+    AABB Triangle::GetBoundingBox() const {
+        return AABB(
+            std::min({m_A.X, m_B.X, m_C.X}),
+            std::max({m_A.X, m_B.X, m_C.X}),
+            std::min({m_A.Y, m_B.Y, m_C.Y}),
+            std::max({m_A.Y, m_B.Y, m_C.Y}),
+            std::min({m_A.Z, m_B.Z, m_C.Z}),
+            std::max({m_A.Z, m_B.Z, m_C.Z})
+        );
+    }
+
+    std::optional<Intersection> Triangle::Intersect(const Ray& ray) const {
+        // Möller-Trumbore ray/triangle intersection algorithm, adapted from
+        // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+        constexpr Float32 epsilon = 1.0e-7f;
+        const Vec3
+            AB = m_B - m_A,
+            AC = m_C - m_A,
+            h  = maths::cross(ray.Direction, AC);
+        const Float32 a = maths::dot(AB, h);
+        if (-epsilon < a && a < epsilon)
+            return std::nullopt; // The ray is parallel to the triangle
+        const Float32 inv_a = 1.0f / a;
+        const Vec3    AO    = ray.Origin - m_A;
+        const Float32 u     = inv_a * maths::dot(AO, h);
+        if (u < 0.0f || 1.0f < u)
+            return std::nullopt;
+        const Vec3    q = maths::cross(AO, AB);
+        const Float32 v = inv_a * maths::dot(ray.Direction, q);
+        if (v < 0.0f || 1.0f < u + v)
+            return std::nullopt;
+        const Float32 t = inv_a * maths::dot(AC, q);
+        if (epsilon < t && t < 1.0f / epsilon)
+            return Intersection(
+                ray.Traverse(t),
+                m_normal,
+                Material
+            );
+        return std::nullopt;
+    }
+
     // Scene
 
     AABB Scene::GetBoundingBox() const {

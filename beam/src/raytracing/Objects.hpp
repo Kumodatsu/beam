@@ -80,6 +80,43 @@ namespace beam {
             const override;
     };
 
+    class Triangle : public Intersectable {
+    public:
+        Material Material;
+
+        Triangle(const beam::Material& material, const Vec3& a, const Vec3& b,
+                const Vec3& c)
+            : Material(material)
+            , m_A(a), m_B(b), m_C(c)
+            , m_normal(maths::normalized(maths::cross(b - a, c - a)))
+            , m_center((a + b + c) / 3.0f)
+        { }
+
+        inline const Vec3& GetA()      const { return m_A;      }
+        inline const Vec3& GetB()      const { return m_B;      }
+        inline const Vec3& GetC()      const { return m_C;      }
+        inline const Vec3& GetNormal() const { return m_normal; }
+        inline const Vec3& GetCenter() const { return m_center; }
+        inline void SetA(const Vec3& a) { m_A = a; Recalculate(); }
+        inline void SetB(const Vec3& b) { m_B = b; Recalculate(); }
+        inline void SetC(const Vec3& c) { m_C = c; Recalculate(); }
+        inline void SetPoints(const Vec3& a, const Vec3& b, const Vec3& c) {
+            m_A = a; m_B = b; m_C = c;
+            Recalculate();
+        }
+
+        virtual AABB GetBoundingBox() const override;
+        virtual std::optional<Intersection> Intersect(const Ray& ray)
+            const override;
+    private:
+        Vec3 m_A, m_B, m_C, m_normal, m_center;
+
+        inline void Recalculate() {
+            m_normal = maths::normalized(maths::cross(m_B - m_A, m_C - m_A));
+            m_center = (m_A + m_B + m_C) / 3.0f;
+        }
+    };
+
     class Scene : public Intersectable {
     public:
         Scene() { }

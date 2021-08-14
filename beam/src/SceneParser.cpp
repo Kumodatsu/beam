@@ -37,6 +37,12 @@ namespace beam {
         );
     }
 
+    static const json& get_key(const json& src, const std::string& key) {
+        if (src.contains(key))
+            return src[key];
+        throw std::runtime_error("Key not present.");
+    }
+
     bool parse_scene(Scene& scene, const std::string& path) {
         scene.Clear();
 
@@ -52,26 +58,33 @@ namespace beam {
         try {
             const auto scene_desc = json::parse(buffer);
 
-            for (const auto& obj : scene_desc["scene"]) {
-                if (obj["type"] == "sphere") {
+            for (const auto& obj : get_key(scene_desc, "scene")) {                
+                if (get_key(obj, "type") == "sphere") {
                     scene.Add<Sphere>(
-                        parse_material(obj["material"]),
-                        parse_vec3(obj["pos"]),
-                        obj["radius"]
+                        parse_material(get_key(obj, "material")),
+                        parse_vec3(get_key(obj, "pos")),
+                        get_key(obj, "radius")
                     );
-                } else if (obj["type"] == "plane") {
+                } else if (get_key(obj, "type") == "plane") {
                     if (obj.contains("d"))
                         scene.Add<Plane>(
-                            parse_material(obj["material"]),
-                            parse_vec3(obj["normal"]),
-                            obj["d"]
+                            parse_material(get_key(obj, "material")),
+                            parse_vec3(get_key(obj, "normal")),
+                            get_key(obj, "d")
                         );
                     else
                         scene.Add<Plane>(
-                            parse_material(obj["material"]),
-                            parse_vec3(obj["normal"]),
-                            parse_vec3(obj["point"])
+                            parse_material(get_key(obj, "material")),
+                            parse_vec3(get_key(obj, "normal")),
+                            parse_vec3(get_key(obj, "point"))
                         );
+                } else if (get_key(obj, "type") == "triangle") {
+                    scene.Add<Triangle>(
+                        parse_material(get_key(obj, "material")),
+                        parse_vec3(get_key(obj, "a")),
+                        parse_vec3(get_key(obj, "b")),
+                        parse_vec3(get_key(obj, "c"))
+                    );
                 } else {
                     std::cerr << "Unknown object type." << std::endl;
                     return false;
@@ -79,6 +92,7 @@ namespace beam {
             }
         } catch (const std::exception& exc) {
             std::cerr << exc.what() << std::endl;
+            scene.Clear();
             return false;
         }
 
