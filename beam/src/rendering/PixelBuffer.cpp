@@ -11,7 +11,7 @@ namespace beam {
     {
         for (UIndex v = 0u; v < height; v++)
             for (UIndex u = 0u; u < width; u++)
-                At(u, v) = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+                At(u, v) = colors::Black;
         glCreateTextures(GL_TEXTURE_2D, 1, &m_texture_id);
         glTextureStorage2D(m_texture_id, 1, GL_RGBA32F, static_cast<GLsizei>(width),
             static_cast<GLsizei>(height));

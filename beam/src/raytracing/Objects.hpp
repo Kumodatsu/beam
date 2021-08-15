@@ -1,6 +1,7 @@
 #pragma once
 #include "raytracing/Raytracing.hpp"
 #include "raytracing/Camera.hpp"
+#include "rendering/Color.hpp"
 #include "rendering/Renderer.hpp"
 
 namespace beam {
@@ -132,7 +133,7 @@ namespace beam {
             const override;
 
         void Clear();
-        void Trace(const Camera& camera, const Vec4& sky_color,
+        void Trace(const Camera& camera, const Color& sky_color,
             PixelBuffer& buffer) const;
     private:
         std::vector<std::unique_ptr<Intersectable>> m_objects;

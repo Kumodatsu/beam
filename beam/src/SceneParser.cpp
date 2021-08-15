@@ -1,6 +1,7 @@
 #include "Common.hpp"
 #include "SceneParser.hpp"
 #include <nlohmann/json.hpp>
+#include "rendering/Color.hpp"
 
 using json = nlohmann::json;
 
@@ -14,12 +15,11 @@ namespace beam {
         );
     }
 
-    static Vec4 parse_color(const json& src) {
-        return Vec4(
+    static Color parse_color(const json& src) {
+        return Color(
             src["r"],
             src["g"],
-            src["b"],
-            src["a"]
+            src["b"]
         );
     }
 

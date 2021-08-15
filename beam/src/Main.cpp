@@ -2,6 +2,7 @@
 #include "raytracing/Camera.hpp"
 #include "raytracing/Raytracing.hpp"
 #include "raytracing/Objects.hpp"
+#include "rendering/Color.hpp"
 #include "rendering/Renderer.hpp"
 #include "rendering/PixelBuffer.hpp"
 #include "SceneParser.hpp"
@@ -23,12 +24,9 @@ int main(int argc, char** argv) {
         width  = 640,
         height = 480;
 
-    constexpr Vec4 clear_color = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    constexpr Color sky_color = colors::Black;
 
     PixelBuffer buffer(width, height);
-    for (UIndex v = 0u; v < height; v++)
-        for (UIndex u = 0u; u < width; u++)
-            buffer.At(u, v) = clear_color;
 
     Camera camera(
         Float32(width) / Float32(height),
@@ -58,7 +56,7 @@ int main(int argc, char** argv) {
             camera.Move(speed * movement);
         }
 
-        scene.Trace(camera, clear_color, buffer);
+        scene.Trace(camera, sky_color, buffer);
 
         renderer.Render(buffer);
         renderer.SwapBuffers();

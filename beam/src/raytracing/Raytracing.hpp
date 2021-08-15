@@ -1,6 +1,6 @@
 #pragma once
 #include "maths/Vec3.hpp"
-#include "maths/Vec4.hpp"
+#include "rendering/Color.hpp"
 
 namespace beam {
 
@@ -24,15 +24,15 @@ namespace beam {
 
     struct Material {
         MaterialType Type;
-        Vec4         Color;
+        Color        Color;
         Float32      Emission;
 
         constexpr Material()
             : Type(MaterialType::Diffuse)
-            , Color(Vec4(1.0f, 1.0f, 1.0f, 1.0f))
+            , Color(colors::White)
             , Emission(0.0f)
         { }
-        constexpr Material(MaterialType type, Vec4 color, Float32 emission)
+        constexpr Material(MaterialType type, beam::Color color, Float32 emission)
             : Type(type), Color(color), Emission(emission) { }
     };
 

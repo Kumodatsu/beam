@@ -191,7 +191,7 @@ namespace beam {
         m_objects.clear();
     }
 
-    void Scene::Trace(const Camera& camera, const Vec4& sky_color,
+    void Scene::Trace(const Camera& camera, const Color& sky_color,
             PixelBuffer& buffer) const {
         const USize
             width  = buffer.GetWidth(),

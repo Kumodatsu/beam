@@ -1,10 +1,10 @@
 #pragma once
-#include "maths/Vec4.hpp"
+#include "rendering/Color.hpp"
 #include <glad/glad.h>
 
 namespace beam {
 
-    using Pixel = Vec4;
+    using Pixel = Color;
 
     class PixelBuffer {
     public:
