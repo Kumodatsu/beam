@@ -1,5 +1,11 @@
-local BIN_DIR = "_out/bin/%{cfg.buildcfg}-%{cfg.architecture}/%{prj.name}"
-local OBJ_DIR = "_out/obj/%{cfg.buildcfg}-%{cfg.architecture}/%{prj.name}"
+local REPO_DIR = path.getabsolute "."
+local DEP_DIR  = REPO_DIR .. "/dependencies"
+local PROJ_DIR = REPO_DIR .. "/beam"
+local OUT_DIR  = REPO_DIR .. "/_out"
+local BIN_DIR  = OUT_DIR  ..
+    "/bin/%{cfg.buildcfg}-%{cfg.architecture}/%{prj.name}"
+local OBJ_DIR  = OUT_DIR  ..
+    "/obj/%{cfg.buildcfg}-%{cfg.architecture}/%{prj.name}"
 
 workspace "beam"
     architecture "x64"
@@ -20,12 +26,12 @@ workspace "beam"
         targetdir     (BIN_DIR)
         objdir        (OBJ_DIR)
         files {
-            "dependencies/glad/glad/include/glad/glad.h",
-            "dependencies/glad/glad/include/KHR/khrplatform.h",
-            "dependencies/glad/glad/src/glad.c",
+            DEP_DIR .. "/glad/glad/include/glad/glad.h",
+            DEP_DIR .. "/glad/glad/include/KHR/khrplatform.h",
+            DEP_DIR .. "/glad/glad/src/glad.c",
         }
         includedirs {
-            "dependencies/glad/glad/include",
+            DEP_DIR .. "/glad/glad/include",
         }
         filter "configurations:debug"
             runtime  "debug"
@@ -41,7 +47,7 @@ workspace "beam"
             optimize "on"
 
         project "GLFW"
-            location      "dependencies/glfw"
+            location      (DEP_DIR .. "/glfw")
             kind          "StaticLib"
             language      "C"
             staticruntime "on"
@@ -50,27 +56,27 @@ workspace "beam"
             targetdir     (BIN_DIR)
             objdir        (OBJ_DIR)
             files {
-                "dependencies/glfw/glfw/include/GLFW/glfw3.h",
-                "dependencies/glfw/glfw/include/GLFW/glfw3native.h",
-                "dependencies/glfw/glfw/src/glfw_config.h",
-                "dependencies/glfw/glfw/src/context.c",
-                "dependencies/glfw/glfw/src/init.c",
-                "dependencies/glfw/glfw/src/input.c",
-                "dependencies/glfw/glfw/src/monitor.c",
-                "dependencies/glfw/glfw/src/vulkan.c",
-                "dependencies/glfw/glfw/src/window.c",
+                DEP_DIR .. "/glfw/glfw/include/GLFW/glfw3.h",
+                DEP_DIR .. "/glfw/glfw/include/GLFW/glfw3native.h",
+                DEP_DIR .. "/glfw/glfw/src/glfw_config.h",
+                DEP_DIR .. "/glfw/glfw/src/context.c",
+                DEP_DIR .. "/glfw/glfw/src/init.c",
+                DEP_DIR .. "/glfw/glfw/src/input.c",
+                DEP_DIR .. "/glfw/glfw/src/monitor.c",
+                DEP_DIR .. "/glfw/glfw/src/vulkan.c",
+                DEP_DIR .. "/glfw/glfw/src/window.c",
             }
             filter "system:windows"
                 files {
-                    "dependencies/glfw/glfw/src/win32_init.c",
-                    "dependencies/glfw/glfw/src/win32_joystick.c",
-                    "dependencies/glfw/glfw/src/win32_monitor.c",
-                    "dependencies/glfw/glfw/src/win32_time.c",
-                    "dependencies/glfw/glfw/src/win32_thread.c",
-                    "dependencies/glfw/glfw/src/win32_window.c",
-                    "dependencies/glfw/glfw/src/wgl_context.c",
-                    "dependencies/glfw/glfw/src/egl_context.c",
-                    "dependencies/glfw/glfw/src/osmesa_context.c",
+                    DEP_DIR .. "/glfw/glfw/src/win32_init.c",
+                    DEP_DIR .. "/glfw/glfw/src/win32_joystick.c",
+                    DEP_DIR .. "/glfw/glfw/src/win32_monitor.c",
+                    DEP_DIR .. "/glfw/glfw/src/win32_time.c",
+                    DEP_DIR .. "/glfw/glfw/src/win32_thread.c",
+                    DEP_DIR .. "/glfw/glfw/src/win32_window.c",
+                    DEP_DIR .. "/glfw/glfw/src/wgl_context.c",
+                    DEP_DIR .. "/glfw/glfw/src/egl_context.c",
+                    DEP_DIR .. "/glfw/glfw/src/osmesa_context.c",
                 }
                 defines {
                     "_GLFW_WIN32",
@@ -96,7 +102,7 @@ workspace "beam"
         staticruntime "on"
         systemversion "latest"
         pchheader     "Common.hpp"
-        pchsource     "beam/src/Common.cpp"
+        pchsource     (PROJ_DIR .. "/src/Common.cpp")
         targetdir     (BIN_DIR)
         objdir        (OBJ_DIR)
         warnings      "extra"
@@ -107,14 +113,14 @@ workspace "beam"
             "GLFW_INCLUDE_NONE",
         }
         files {
-            "%{prj.name}/src/**.hpp",
-            "%{prj.name}/src/**.cpp",
+            PROJ_DIR .. "/src/**.hpp",
+            PROJ_DIR .. "/src/**.cpp",
         }
         includedirs {
-            "%{prj.name}/src",
-            "dependencies/include",
-            "dependencies/glad/glad/include",
-            "dependencies/glfw/glfw/include",
+            PROJ_DIR .. "/src",
+            DEP_DIR  .. "/include",
+            DEP_DIR  .. "/glad/glad/include",
+            DEP_DIR  .. "/glfw/glfw/include",
         }
         links {
             "glad",
