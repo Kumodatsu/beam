@@ -96,7 +96,7 @@ workspace "beam"
         staticruntime "on"
         systemversion "latest"
         pchheader     "Common.hpp"
-        pchsource     "beam/src/Common.hpp"
+        pchsource     "beam/src/Common.cpp"
         targetdir     (BIN_DIR)
         objdir        (OBJ_DIR)
         warnings      "extra"
