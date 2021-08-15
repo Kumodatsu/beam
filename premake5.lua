@@ -106,9 +106,6 @@ workspace "beam"
         targetdir     (BIN_DIR)
         objdir        (OBJ_DIR)
         warnings      "extra"
-        disablewarnings {
-            4068
-        }
         defines {
             "GLFW_INCLUDE_NONE",
         }
@@ -126,6 +123,10 @@ workspace "beam"
             "glad",
             "glfw",
         }
+        filter "action:vs*"
+            disablewarnings {
+                4068
+            }
         filter "system:windows"
             links {
                 "gdi32",
