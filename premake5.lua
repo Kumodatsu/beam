@@ -145,3 +145,36 @@ workspace "beam"
             symbols  "off"
             optimize "on"
             defines  { "BEAM_CONFIG_RELEASE" }
+
+newaction {
+    trigger     = "clean",
+    description = "Removes generated project files and build output.",
+
+    onStart = function()
+        local is_dep = function(path)
+            return path:find(
+                string.format("%s/[^/]+/[^/]+/", DEP_DIR), 1
+            ) == 1 or path:find(
+                string.format("%s\\[^\\]+\\[^\\]+\\", DEP_DIR), 1
+            ) == 1
+        end
+        os.rmdir(OUT_DIR)
+        local file_patterns = {
+            "**.sln",
+            "**.vcxproj",
+            "**.vcxproj.user",
+            "**.vcxproj.filters",
+            "**Makefile",
+        }
+        for _, pattern in ipairs(file_patterns) do
+            local matches = os.matchfiles(
+                string.format("%s/%s", REPO_DIR, pattern)
+            )
+            for _, file in ipairs(matches) do
+                if not is_dep(file) then
+                    os.remove(file)
+                end
+            end
+        end
+    end
+}
