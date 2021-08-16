@@ -40,18 +40,21 @@ int main(int argc, char** argv) {
     Scene scene;
     parse_scene(scene, argv[1]);
 
+    auto lt = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<Float32> ft = lt - lt;
     while (!renderer.IsWindowCloseRequested()) {
-        constexpr Float32 speed     = 1.0f;
-        constexpr Float32 rot_speed = 10.0f;
+        const Float32 dt = ft.count();
+        constexpr Float32 speed     = 15.0f;
+        constexpr Float32 rot_speed = 360.0f;
         Vec3 movement = Vec3(0.0f, 0.0f, 0.0f);
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_Q))
-            camera.RotateHorizontally(-rot_speed);
+            camera.RotateHorizontally(dt * -rot_speed);
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_E))
-            camera.RotateHorizontally(rot_speed);
+            camera.RotateHorizontally(dt * rot_speed);
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_R))
-            camera.RotateVertically(rot_speed);
+            camera.RotateVertically(dt * rot_speed);
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_F))
-            camera.RotateVertically(-rot_speed);
+            camera.RotateVertically(dt * -rot_speed);
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_A))
             movement.x -= 1.0f;
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_D))
@@ -66,7 +69,7 @@ int main(int argc, char** argv) {
             movement.z -= 1.0f;
         if (movement != Vec3 { 0.0f, 0.0f, 0.0f }) {
             movement = glm::normalize(movement);
-            camera.Move(speed * movement);
+            camera.Move(dt * speed * movement);
         }
 
         scene.Trace(camera, sky_color, buffer);
@@ -84,6 +87,13 @@ int main(int argc, char** argv) {
         }
 
         glfwPollEvents();
+
+        const auto t = std::chrono::high_resolution_clock::now();
+        ft = t - lt;
+        lt = t;
+        std::cout << "Frame time: "
+            << std::chrono::duration_cast<std::chrono::milliseconds>(ft).count()
+            << " ms " << std::endl;
     }
 
     return 0;
