@@ -26,6 +26,9 @@
 #include <cstdlib>
 #include <malloc.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
+
 #if defined(BEAM_CONFIG_DEBUG)
 #define BEAM_DEBUG_ONLY if constexpr (true)
 #else
@@ -49,10 +52,17 @@ namespace beam {
 	// Self documenting types
 
 	// Represents a size in bytes.
-	using USize   = size_t;
+	using USize  = size_t;
 	// Represents a count (for example, a number of elements).
-	using UCount  = size_t;
+	using UCount = size_t;
 	// Represents an index.
-	using UIndex  = size_t;
+	using UIndex = size_t;
+
+    // glm types
+    using Vec2       = glm::vec2;
+    using Vec3       = glm::vec3;
+    using Vec4       = glm::vec4;
+    using Mat4       = glm::mat4;
+    using Quaternion = glm::quat;
 
 }

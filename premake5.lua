@@ -118,6 +118,7 @@ workspace "beam"
             DEP_DIR  .. "/include",
             DEP_DIR  .. "/glad/glad/include",
             DEP_DIR  .. "/glfw/glfw/include",
+            DEP_DIR  .. "/glm/glm",
         }
         links {
             "glad",
