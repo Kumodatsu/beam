@@ -190,23 +190,32 @@ namespace beam {
     }
 
     void Scene::Trace(const Camera& camera, const Color& sky_color,
-            PixelBuffer& buffer) const {
+            RNG& rng, PixelBuffer& buffer) const {
+        constexpr UInt32
+            samples_per_pixel = 16;
         const USize
             width  = buffer.GetWidth(),
             height = buffer.GetHeight();
         const Float32
             du = 1.0f / Float32(width),
-            dv = 1.0f / Float32(height);
+            dv = 1.0f / Float32(height),
+            w  = 1.0f / Float32(samples_per_pixel);
         for (UIndex v = 0u; v < height; v++) {
             for (UIndex u = 0u; u < width; u++) {
                 const Float32
                     ru = u * du,
                     rv = v * dv;
-                const Ray  ray          = camera.ScreenCoordsToRay(ru, rv);
-                const auto intersection = Intersect(ray);
-                buffer.At(u, v) = intersection.has_value()
-                                ? intersection->Material.Color
-                                : sky_color;
+                Color color = sky_color;
+                for (UInt32 i = 0; i < samples_per_pixel; i++) {
+                    const Ray ray = camera.ScreenCoordsToRay(
+                        ru + rng.Generate(-du, du),
+                        rv + rng.Generate(-dv, dv)
+                    );
+                    const auto intersection = Intersect(ray);
+                    if (intersection)
+                        color += w * intersection->Material.Color;
+                }
+                buffer.At(u, v) = 0.5f * (buffer.At(u, v) + color);
             }
         }
     }

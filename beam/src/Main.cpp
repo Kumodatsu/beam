@@ -5,6 +5,7 @@
 #include "rendering/Color.hpp"
 #include "rendering/Renderer.hpp"
 #include "rendering/PixelBuffer.hpp"
+#include "RNG.hpp"
 #include "SceneParser.hpp"
 
 int main(int argc, char** argv) {
@@ -40,6 +41,8 @@ int main(int argc, char** argv) {
     Scene scene;
     parse_scene(scene, argv[1]);
 
+    RNG rng;
+
     auto lt = std::chrono::high_resolution_clock::now();
     std::chrono::duration<Float32> ft = lt - lt;
     while (!renderer.IsWindowCloseRequested()) {
@@ -72,7 +75,7 @@ int main(int argc, char** argv) {
             camera.Move(dt * speed * movement);
         }
 
-        scene.Trace(camera, sky_color, buffer);
+        scene.Trace(camera, sky_color, rng, buffer);
 
         renderer.Render(buffer);
         renderer.SwapBuffers();

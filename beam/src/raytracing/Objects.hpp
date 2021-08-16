@@ -3,6 +3,7 @@
 #include "raytracing/Camera.hpp"
 #include "rendering/Color.hpp"
 #include "rendering/Renderer.hpp"
+#include "RNG.hpp"
 
 namespace beam {
 
@@ -134,7 +135,7 @@ namespace beam {
 
         void Clear();
         void Trace(const Camera& camera, const Color& sky_color,
-            PixelBuffer& buffer) const;
+            RNG& rng, PixelBuffer& buffer) const;
     private:
         std::vector<std::unique_ptr<Intersectable>> m_objects;
     };
