@@ -1,6 +1,4 @@
 #pragma once
-#include "maths/Trigonometry.hpp"
-#include "maths/Vec3.hpp"
 #include "raytracing/Raytracing.hpp"
 
 namespace beam {
@@ -45,7 +43,7 @@ namespace beam {
                 m_aperture_radius;
 
         inline Float32 FOVToScreenScale(Float32 fov_deg) {
-            return 2.0f * std::tan(0.5f * maths::deg_to_rad(fov_deg));
+            return 2.0f * std::tan(0.5f * glm::radians(fov_deg));
         }
     };
 

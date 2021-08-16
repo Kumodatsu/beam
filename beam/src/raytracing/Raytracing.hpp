@@ -1,5 +1,5 @@
 #pragma once
-#include "maths/Vec3.hpp"
+#include <glm/vec3.hpp>
 #include "rendering/Color.hpp"
 
 namespace beam {
@@ -42,8 +42,8 @@ namespace beam {
         Material Material;
 
         constexpr Intersection()
-            : Point(Vec3(0.0f, 0.0f, 0.0f))
-            , Normal(Vec3(0.0f, 1.0f, 0.0f))
+            : Point({ 0.0f, 0.0f, 0.0f })
+            , Normal({ 0.0f, 1.0f, 0.0f })
             , Material()
         { }
         constexpr Intersection(

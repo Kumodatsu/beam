@@ -7,9 +7,9 @@ namespace beam {
             Vec3 direction, Float32 focal_distance, Float32 aperture_radius)
         : m_position(position)
         , m_forward(direction)
-        , m_right(maths::normalized(maths::cross(Vec3(0.0f, 1.0f, 0.0f),
+        , m_right(glm::normalize(glm::cross(Vec3(0.0f, 1.0f, 0.0f),
             direction)))
-        , m_up(maths::cross(direction, m_right))
+        , m_up(glm::cross(direction, m_right))
         , m_screen_scale(FOVToScreenScale(fov_deg))
         , m_screen_aspect(aspect)
         , m_focal_distance(focal_distance)
@@ -23,7 +23,7 @@ namespace beam {
             + m_focal_distance * m_forward
             + (u - 0.5f) * scale * m_right
             - (v - 0.5f) * scale * (1.0f / m_screen_aspect) * m_up;
-        return Ray(pixel_pos, maths::normalized(pixel_pos - m_position));
+        return Ray(pixel_pos, glm::normalize(pixel_pos - m_position));
     }
 
     void Camera::Move(const Vec3& movement) {
@@ -33,7 +33,7 @@ namespace beam {
     void Camera::ResetRotation() {
         m_forward = Vec3(0.0f, 0.0f, 1.0f);
         m_up      = Vec3(0.0f, 1.0f, 0.0f);
-        m_right   = maths::cross(m_up, m_forward);
+        m_right   = glm::cross(m_up, m_forward);
     }
 
     void Camera::RotateVertically(Float32 /*angle_deg*/) {

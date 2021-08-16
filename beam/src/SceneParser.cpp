@@ -8,19 +8,20 @@ using json = nlohmann::json;
 namespace beam {
 
     static Vec3 parse_vec3(const json& src) {
-        return Vec3(
-            src["x"],
-            src["y"],
-            src["z"]
-        );
+        return {
+            Float32(src["x"]),
+            Float32(src["y"]),
+            Float32(src["z"])
+        };
     }
 
     static Color parse_color(const json& src) {
-        return Color(
-            src["r"],
-            src["g"],
-            src["b"]
-        );
+        return {
+            Float32(src["r"]),
+            Float32(src["g"]),
+            Float32(src["b"]),
+            1.0f
+        };
     }
 
     static MaterialType parse_material_type(const std::string& src) {

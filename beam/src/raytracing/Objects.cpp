@@ -16,12 +16,12 @@ namespace beam {
     bool AABB::Intersects(const Ray& ray) const {
         const Vec3 inv_dir = 1.0f / ray.Direction;
         const Float32
-            t_0   = inv_dir.X * (XMin - ray.Origin.X),
-            t_1   = inv_dir.X * (XMax - ray.Origin.X),
-            t_2   = inv_dir.Y * (YMin - ray.Origin.Y),
-            t_3   = inv_dir.Y * (YMax - ray.Origin.Y),
-            t_4   = inv_dir.Z * (ZMin - ray.Origin.Z),
-            t_5   = inv_dir.Z * (ZMax - ray.Origin.Z),
+            t_0   = inv_dir.x * (XMin - ray.Origin.x),
+            t_1   = inv_dir.x * (XMax - ray.Origin.x),
+            t_2   = inv_dir.y * (YMin - ray.Origin.y),
+            t_3   = inv_dir.y * (YMax - ray.Origin.y),
+            t_4   = inv_dir.z * (ZMin - ray.Origin.z),
+            t_5   = inv_dir.z * (ZMax - ray.Origin.z),
             t_min = std::max(
                         std::max(std::min(t_0, t_1), std::min(t_2, t_3)),
                         std::min(t_4, t_5)
@@ -57,12 +57,12 @@ namespace beam {
 
     AABB Sphere::GetBoundingBox() const {
         return AABB(
-            Center.X - Radius,
-            Center.X + Radius,
-            Center.Y - Radius,
-            Center.Y + Radius,
-            Center.Z - Radius,
-            Center.Z + Radius
+            Center.x - Radius,
+            Center.x + Radius,
+            Center.y - Radius,
+            Center.y + Radius,
+            Center.z - Radius,
+            Center.z + Radius
         );
     }
 
@@ -70,48 +70,46 @@ namespace beam {
         const Vec3
             O_C = ray.Origin - Center;
         const Float32
-            a   = maths::dot(ray.Direction, ray.Direction),
-            b   = 2.0f * maths::dot(ray.Direction, O_C),
-            c   = maths::dot(O_C, O_C) - Radius * Radius,
+            a   = glm::dot(ray.Direction, ray.Direction),
+            b   = 2.0f * glm::dot(ray.Direction, O_C),
+            c   = glm::dot(O_C, O_C) - Radius * Radius,
             D   = b * b - 4.0f * a * c;
         if (D < 0.0f)
             return std::nullopt;
         const Float32
-            s   = std::sqrt(D),
+            s   = glm::sqrt(D),
             t_0 = (-b + s) / (2.0f * a),
             t_1 = (-b - s) / (2.0f * a),
             t   = (t_0 < 0.0f || t_1 < t_0) ? t_1 : t_0;
         if (t < 0.0f)
             return std::nullopt;
         const auto P = ray.Traverse(t);
-        return Intersection(P, maths::normalized(P - Center), Material);
+        return Intersection(P, glm::normalize(P - Center), Material);
     }
 
     // Plane
 
     AABB Plane::GetBoundingBox() const {
         AABB aabb = AABB::Infinite();
-        if (!maths::is_axis_aligned(Normal))
-            return aabb;
-        if (Normal.X > 0.0f)
+        if (Normal.x > 0.0f && Normal.y == 0.0f && Normal.z == 0.0f)
             aabb.XMin = aabb.XMax = -D;
-        else if (Normal.Y > 0.0f)
+        else if (Normal.x == 0.0f && Normal.y > 0.0f && Normal.z == 0.0f)
             aabb.YMin = aabb.YMax = -D;
-        else if (Normal.Z > 0.0f)
+        else if (Normal.x == 0.0f && Normal.y == 0.0f && Normal.z > 0.0f)
             aabb.ZMin = aabb.ZMax = -D;
         return aabb;
     }
 
     std::optional<Intersection> Plane::Intersect(const Ray& ray) const {
         const Float32 t
-            = -(maths::dot(ray.Origin,    Normal) + D)
-            /   maths::dot(ray.Direction, Normal);
+            = -(glm::dot(ray.Origin,    Normal) + D)
+            /   glm::dot(ray.Direction, Normal);
         if (t < 0.0f)
             return std::nullopt;
         const auto P = ray.Traverse(t);
         return Intersection(
             P,
-            maths::dot(ray.Direction, Normal) > 0.0f ? -Normal : Normal,
+            glm::dot(ray.Direction, Normal) > 0.0f ? -Normal : Normal,
             Material
         );
     }
@@ -120,12 +118,12 @@ namespace beam {
 
     AABB Triangle::GetBoundingBox() const {
         return AABB(
-            std::min({m_A.X, m_B.X, m_C.X}),
-            std::max({m_A.X, m_B.X, m_C.X}),
-            std::min({m_A.Y, m_B.Y, m_C.Y}),
-            std::max({m_A.Y, m_B.Y, m_C.Y}),
-            std::min({m_A.Z, m_B.Z, m_C.Z}),
-            std::max({m_A.Z, m_B.Z, m_C.Z})
+            std::min({m_A.x, m_B.x, m_C.x}),
+            std::max({m_A.x, m_B.x, m_C.x}),
+            std::min({m_A.y, m_B.y, m_C.y}),
+            std::max({m_A.y, m_B.y, m_C.y}),
+            std::min({m_A.z, m_B.z, m_C.z}),
+            std::max({m_A.z, m_B.z, m_C.z})
         );
     }
 
@@ -136,20 +134,20 @@ namespace beam {
         const Vec3
             AB = m_B - m_A,
             AC = m_C - m_A,
-            h  = maths::cross(ray.Direction, AC);
-        const Float32 a = maths::dot(AB, h);
+            h  = glm::cross(ray.Direction, AC);
+        const Float32 a = glm::dot(AB, h);
         if (-epsilon < a && a < epsilon)
             return std::nullopt; // The ray is parallel to the triangle
         const Float32 inv_a = 1.0f / a;
         const Vec3    AO    = ray.Origin - m_A;
-        const Float32 u     = inv_a * maths::dot(AO, h);
+        const Float32 u     = inv_a * glm::dot(AO, h);
         if (u < 0.0f || 1.0f < u)
             return std::nullopt;
-        const Vec3    q = maths::cross(AO, AB);
-        const Float32 v = inv_a * maths::dot(ray.Direction, q);
+        const Vec3    q = glm::cross(AO, AB);
+        const Float32 v = inv_a * glm::dot(ray.Direction, q);
         if (v < 0.0f || 1.0f < u + v)
             return std::nullopt;
-        const Float32 t = inv_a * maths::dot(AC, q);
+        const Float32 t = inv_a * glm::dot(AC, q);
         if (epsilon < t && t < 1.0f / epsilon)
             return Intersection(
                 ray.Traverse(t),
@@ -178,7 +176,7 @@ namespace beam {
             if (!intersection)
                 continue;
             const Float32 distance_sq =
-                maths::length_sq(ray.Origin - intersection->Point);
+                glm::length2(ray.Origin - intersection->Point);
             if (closest_distance_sq > distance_sq) {
                 closest_intersection = intersection;
                 closest_distance_sq  = distance_sq;

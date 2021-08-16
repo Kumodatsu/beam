@@ -31,8 +31,8 @@ int main(int argc, char** argv) {
     Camera camera(
         Float32(width) / Float32(height),
         80.0f,
-        Vec3(0.0f, 0.0f, -3.0f),
-        Vec3(0.0f, 0.0f, 1.0f),
+        { 0.0f, 0.0f, -3.0f },
+        { 0.0f, 0.0f,  1.0f },
         5.0f,
         0.1f
     );
@@ -44,15 +44,15 @@ int main(int argc, char** argv) {
         constexpr Float32 speed = 1.0f;
         Vec3 movement = Vec3(0.0f, 0.0f, 0.0f);
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_W))
-            movement.Z += 1.0f;
+            movement.z += 1.0f;
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_S))
-            movement.Z -= 1.0f;
+            movement.z -= 1.0f;
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_A))
-            movement.X -= 1.0f;
+            movement.x -= 1.0f;
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_D))
-            movement.X += 1.0f;
-        if (movement != Vec3(0.0f, 0.0f, 0.0f)) {
-            maths::normalize(movement);
+            movement.x += 1.0f;
+        if (movement != Vec3 { 0.0f, 0.0f, 0.0f }) {
+            movement = glm::normalize(movement);
             camera.Move(speed * movement);
         }
 

@@ -73,7 +73,7 @@ namespace beam {
 
         Plane(const beam::Material& material, const Vec3& normal,
                 const Vec3& point)
-            : Normal(normal), D(-maths::dot(normal, point)), Material(material)
+            : Normal(normal), D(-glm::dot(normal, point)), Material(material)
         { }
 
         virtual AABB GetBoundingBox() const override;
@@ -89,7 +89,7 @@ namespace beam {
                 const Vec3& c)
             : Material(material)
             , m_A(a), m_B(b), m_C(c)
-            , m_normal(maths::normalized(maths::cross(b - a, c - a)))
+            , m_normal(glm::normalize(glm::cross(b - a, c - a)))
             , m_center((a + b + c) / 3.0f)
         { }
 
@@ -113,7 +113,7 @@ namespace beam {
         Vec3 m_A, m_B, m_C, m_normal, m_center;
 
         inline void Recalculate() {
-            m_normal = maths::normalized(maths::cross(m_B - m_A, m_C - m_A));
+            m_normal = glm::normalize(glm::cross(m_B - m_A, m_C - m_A));
             m_center = (m_A + m_B + m_C) / 3.0f;
         }
     };
