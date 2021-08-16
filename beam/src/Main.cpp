@@ -41,16 +41,29 @@ int main(int argc, char** argv) {
     parse_scene(scene, argv[1]);
 
     while (!renderer.IsWindowCloseRequested()) {
-        constexpr Float32 speed = 1.0f;
+        constexpr Float32 speed     = 1.0f;
+        constexpr Float32 rot_speed = 10.0f;
         Vec3 movement = Vec3(0.0f, 0.0f, 0.0f);
-        if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_W))
-            movement.z += 1.0f;
-        if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_S))
-            movement.z -= 1.0f;
+        if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_Q))
+            camera.RotateHorizontally(-rot_speed);
+        if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_E))
+            camera.RotateHorizontally(rot_speed);
+        if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_R))
+            camera.RotateVertically(rot_speed);
+        if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_F))
+            camera.RotateVertically(-rot_speed);
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_A))
             movement.x -= 1.0f;
         if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_D))
             movement.x += 1.0f;
+        if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_SPACE))
+            movement.y += 1.0f;
+        if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_LEFT_CONTROL))
+            movement.y -= 1.0f;
+        if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_W))
+            movement.z += 1.0f;
+        if (glfwGetKey(renderer.GetHandle(), GLFW_KEY_S))
+            movement.z -= 1.0f;
         if (movement != Vec3 { 0.0f, 0.0f, 0.0f }) {
             movement = glm::normalize(movement);
             camera.Move(speed * movement);

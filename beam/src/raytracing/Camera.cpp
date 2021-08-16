@@ -27,7 +27,10 @@ namespace beam {
     }
 
     void Camera::Move(const Vec3& movement) {
-        m_position += movement;
+        m_position = m_position
+            + movement.x * m_right
+            + movement.y * Vec3 {0.0f, 1.0f, 0.0f}
+            + movement.z * m_forward;
     }
 
     void Camera::ResetRotation() {
@@ -36,12 +39,21 @@ namespace beam {
         m_right   = glm::cross(m_up, m_forward);
     }
 
-    void Camera::RotateVertically(Float32 /*angle_deg*/) {
-        throw std::runtime_error("Not implemented.");
+    void Camera::RotateVertically(Float32 angle_deg) {
+        glm::quat rot = glm::angleAxis(-glm::radians(angle_deg), m_right);
+        glm::mat4 rotMatrix = glm::mat4_cast(rot);
+        m_forward = rotMatrix * Vec4(m_forward, 0.0f);
+        m_right   = rotMatrix * Vec4(m_right, 0.0f);
+        m_up      = rotMatrix * Vec4(m_up, 0.0f);
     }
 
-    void Camera::RotateHorizontally(Float32 /*angle_deg*/) {
-        throw std::runtime_error("Not implemented.");
+    void Camera::RotateHorizontally(Float32 angle_deg) {
+        glm::quat rot = glm::angleAxis(glm::radians(angle_deg),
+            Vec3 {0.0f, 1.0f, 0.0f});
+        glm::mat4 rotMatrix = glm::mat4_cast(rot);
+        m_forward = rotMatrix * Vec4(m_forward, 0.0f);
+        m_right   = rotMatrix * Vec4(m_right, 0.0f);
+        m_up      = rotMatrix * Vec4(m_up, 0.0f);
     }
 
 }
